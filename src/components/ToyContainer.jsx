@@ -1,21 +1,28 @@
 import React from "react";
 import ToyCard from "./ToyCard";
-import { useState, useEffect } from "react";
 
-function ToyContainer() {
-  const [toys, setToys] = useState([]);
+function ToyContainer({ toys, setToys }) {
+  function handleDeleteToy(id) {
+    const updatedToys = toys.filter((toy) => toy.id !== id);
+    setToys(updatedToys);
+  }
 
-  useEffect(() => {
-    fetch("http://localhost:3001/toys")
-      .then((response) => response.json())
-      .then((data) => setToys(data))
-      .catch((error) => console.error('Error getting toys', error));
-  }, []);
+  function handleLike(updatedToy) {
+    const updatedToys = toys.map((toy) =>
+      toy.id === updatedToy.id ? updatedToy : toy
+    );
+    setToys(updatedToys);
+  }
 
   return (
     <div id="toy-collection">
       {toys.map((toy) => (
-        <ToyCard key={toy.id} toy={toy} />
+        <ToyCard
+          key={toy.id}
+          toy={toy}
+          onDelete={handleDeleteToy}
+          onLike={handleLike}
+        />
       ))}
     </div>
   );
